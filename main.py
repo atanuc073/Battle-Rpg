@@ -26,7 +26,7 @@ grenade=Item("Grenade","attack","deals 500 damage",500)
 
 # Instantiate People
 player_spells=[fire,thunder,blizzard,meteor,cure,cura,quake]
-player_items=[potion,hiPotion,superPotion,elixer,hielixer,grenade]
+player_items=[{"item":potion,"quantity":15},{"item" : hiPotion,"quantity":5},{"item" : superPotion,"quantity":5},{"item" : elixer,"quantity":5},{"item" : hielixer,"quantity":2},{"item" : grenade,"quantity":5}]
 player=Person(460,65,60,34,player_spells,player_items)
 enemy=Person(1200,65,45,25,[],[])
 
@@ -77,10 +77,25 @@ while running:
         if item_choice==-1:
             continue
 
-        item=player.items[item_choice]
+        item=player.items[item_choice]["item"]
+        if player.items[item_choice]["quantity"]==0:
+            print(bcolors.FAIL+"\n"+"You have used all you items..."+bcolors.ENDC)
+            continue
+
+        player.items[item_choice]["quantity"]-=1
+
+
         if item.type=="potion":
             player.heal(item.prop)
-            print(bcolors.OKGREEN+"\n"+item.name+" Heals For",str(item.prop),"HP"+bcolors.ENDC)
+            print(bcolors.OKGREEN+"\n"+item.name+" Heals For ",str(item.prop)," HP"+bcolors.ENDC)
+
+        elif item.type=="elixer":
+            player.hp=player.maxhp
+            player.mp=player.maxmp
+            print(bcolors.OKGREEN+"\n"+item.name+" fully restores MP/HP"+bcolors.ENDC)
+        elif item.type=="attack":
+            enemy.take_damage(item.prop)
+            print(bcolors.FAIL+"\n"+item.name+"deals ",str(item.prop)," points of damage"+bcolors.ENDC)
 
 
 
